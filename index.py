@@ -38,8 +38,6 @@ def main_section_one(uploaded_file,placeholder,section_options,text):
                 col1, col2 = st.columns(2)
                 filepath = "data/"+st.session_state.file_name[i]
                 with col1:
-                    # st.info("Uploaded File "+str(st.session_state.file_name[i]))
-                    # displayPDF(filepath)
                     if(st.session_state.file_name[i].split(".")[-1]=='pdf'):
                         st.info("Uploaded File "+str(st.session_state.file_name[i]))
                         displayPDF(filepath)
