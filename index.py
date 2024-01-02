@@ -38,8 +38,14 @@ def main_section_one(uploaded_file,placeholder,section_options,text):
                 col1, col2 = st.columns(2)
                 filepath = "data/"+st.session_state.file_name[i]
                 with col1:
-                    st.info("Uploaded File "+str(st.session_state.file_name[i]))
-                    displayPDF(filepath)
+                    # st.info("Uploaded File "+str(st.session_state.file_name[i]))
+                    # displayPDF(filepath)
+                    if(st.session_state.file_name[i].split(".")[-1]=='pdf'):
+                        st.info("Uploaded File "+str(st.session_state.file_name[i]))
+                        displayPDF(filepath)
+                    elif(st.session_state.file_name[i].split(".")[-1]=='jpg' or st.session_state.file_name[i].split(".")[-1]=='jpeg' or st.session_state.file_name[i].split(".")[-1]=='png'):
+                        st.info("Uploaded File "+str(st.session_state.file_name[i]))
+                        st.image(filepath)
                 with col2:
                     st.info("Summarization from File "+str(st.session_state.file_name[i]))
                     st.success(st.session_state.summary[i])
@@ -69,8 +75,12 @@ def main_section_one(uploaded_file,placeholder,section_options,text):
                     with open(filepath, "wb") as temp_file:
                         temp_file.write(i.read())
                     with col1:
-                        st.info("Uploaded File "+str(i.name))
-                        displayPDF(filepath)
+                        if(str(i.name).split(".")[-1]=='pdf'):
+                            st.info("Uploaded File "+str(i.name))
+                            displayPDF(filepath)
+                        elif(str(i.name).split(".")[-1]=='jpg' or str(i.name).split(".")[-1]=='jpeg' or str(i.name).split(".")[-1]=='png'):
+                            st.info("Uploaded File "+str(i.name))
+                            st.image(i)
                     with col2:
                         a=st.info("Summarization in progress...")
                         summary=load_model(i,modes)

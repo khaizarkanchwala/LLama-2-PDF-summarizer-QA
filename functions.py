@@ -14,6 +14,8 @@ from langchain.chains import ConversationalRetrievalChain,RetrievalQA
 import numpy as np
 import PyPDF2
 import re
+import pytesseract
+from PIL import Image
 MODEL_PATH="./model/llama-2-7b-chat.Q8_0.gguf"
 
 def load_moadel()-> LlamaCpp:
@@ -44,19 +46,30 @@ def load_moadel()-> LlamaCpp:
 
 def extract_text_from_pdf(pdf_file):
     text = ""
-    pdf_reader = PyPDF2.PdfReader(pdf_file)
-    for page_num in range(len(pdf_reader.pages)):
-        text+=pdf_reader.pages[page_num].extract_text()
-    orgtext=' '.join(text.split())
+    if str(pdf_file.name).split(".")[-1]=='pdf':
+        pdf_reader = PyPDF2.PdfReader(pdf_file)
+        for page_num in range(len(pdf_reader.pages)):
+            text+=pdf_reader.pages[page_num].extract_text()
+        orgtext=' '.join(text.split())
+        text=orgtext
+    elif str(pdf_file.name).split(".")[-1]=='jpg' or str(pdf_file.name).split(".")[-1]=='jpeg' or str(pdf_file.name).split(".")[-1]=='png':
+        photo=Image.open(pdf_file)
+        docs=pytesseract.image_to_string(photo)
+        text=docs
     # print(orgtext)
-    return orgtext
+    return text
 
 def extract_text_from_all_pdf(pdf_files):
     text=""
     for pdf in pdf_files:
-        pdf_reader=PyPDF2.PdfReader(pdf)
-        for page in pdf_reader.pages:
-            text+=page.extract_text()
+        if str(pdf.name).split(".")[-1]=='pdf':
+            pdf_reader=PyPDF2.PdfReader(pdf)
+            for page in pdf_reader.pages:
+                text+=page.extract_text()
+        elif str(pdf.name).split(".")[-1]=='jpg' or str(pdf.name).split(".")[-1]=='jpeg' or str(pdf.name).split(".")[-1]=='png':
+            photo=Image.open(pdf)
+            docs=pytesseract.image_to_string(photo)
+            text+=docs
     orgtext=' '.join(text.split())
     return orgtext
 
